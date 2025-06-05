@@ -1,0 +1,47 @@
+config_tag: vitTin1k
+seed: 42
+wandb_proj: X
+vis_path: True
+
+data:
+  dataset: "levir"
+
+  img_size: 256
+  num_workers: 8
+  batch_size: 32
+  pin_memory: True
+
+train:
+  epochs: 100
+  val_freq: 5
+  base_lr: 1.0e-4
+  weight_decay: 1e-4
+  layer_decay: 0.99
+  lr_scheduler:
+    type: "none"
+  loss:
+    - ce
+  transforms:
+    - Normalize: { mean: [ 0.5, 0.5, 0.5 ], std: [ 0.5, 0.5, 0.5 ] }    # ViT norm
+
+encoder:
+  class_path: models.modules.hf_backbone.HFBackbone
+  init_args:
+    model_name: timm:vit_tiny_patch16_224   # timm/vit_tiny_patch16_224.augreg_in21k
+    return_layers: [3, 5, 7, 11]            # following MTP (0-indexed)
+    lr: 6e-5
+    weight_decay: 0.05
+    train_args:
+      pretrained: True
+      finetune: True
+
+diff:
+  class_path: models.modules.simple_diff.SubDiff
+
+decoder:
+  train:
+    class_path: models.modules.upernet.UperNetHead
+    init_args:
+      out_channels: 1
+      hidden_size: 512
+      use_auxfcn: False

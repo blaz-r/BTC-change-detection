@@ -1,0 +1,45 @@
+config_tag: swinT
+seed: 42
+wandb_proj: X
+vis_path: True
+
+data:
+  dataset: "levir"
+
+  img_size: 256
+  num_workers: 8
+  batch_size: 32
+  pin_memory: True
+
+train:
+  epochs: 100
+  val_freq: 5
+  base_lr: 1.0e-4
+  weight_decay: 1e-4
+  layer_decay: 0.99
+  lr_scheduler:
+    type: "none"
+  loss:
+    - ce
+  transforms:
+    - Normalize: { mean: [ 0.485, 0.456, 0.406 ], std: [ 0.229, 0.224, 0.225 ] }    # ADE20k standard
+
+encoder:
+  class_path: models.modules.hf_backbone.HFBackbone
+  init_args:
+    model_name: microsoft/swin-tiny-patch4-window7-224
+    return_layers: [1, 2, 3, 4]
+    train_args:
+      pretrained: False
+      finetune: True
+
+diff:
+  class_path: models.modules.simple_diff.SubDiff
+
+decoder:
+  train:
+    class_path: models.modules.upernet.UperNetHead
+    init_args:
+      out_channels: 1
+      hidden_size: 512
+      use_auxfcn: False

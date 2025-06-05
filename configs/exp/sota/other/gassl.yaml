@@ -1,0 +1,45 @@
+config_tag: gassl
+seed: 42
+wandb_proj: X
+
+data:
+  dataset: "oscd96"
+  img_size: 256
+  num_workers: 8
+  batch_size: 32
+  pin_memory: True
+
+train:
+  epochs: 100
+  val_freq: 5
+  base_lr: 1.0e-4
+  weight_decay: 1e-4
+  layer_decay: 0.99
+  lr_scheduler:
+    type: "cosine"
+    ratio_t0: 1
+  loss:
+    - dice
+  transforms:
+    - VerticalFlip: { p: 0.3 }
+    - HorizontalFlip: { p: 0.3 }
+    - Rotate: { limit: [ -90, 90 ], p: 0.3 }
+    - Normalize: { mean: [ 0.485, 0.456, 0.406 ], std: [ 0.229, 0.224, 0.225 ] }
+
+encoder:
+  class_path: models.modules.other_pt.base.OtherPT
+  init_args:
+    pt_name: "gassl"
+    pt_path: "weights/gassl_model.pth"
+    return_layers: [1, 2, 3, 4]
+
+diff:
+  class_path: models.modules.simple_diff.SubDiff
+
+decoder:
+  train:
+    class_path: models.modules.upernet.UperNetHead
+    init_args:
+      out_channels: 1
+      hidden_size: 512
+      use_auxfcn: False

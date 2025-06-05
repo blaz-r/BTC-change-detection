@@ -1,0 +1,61 @@
+config_tag: BTC-B     # use for experiment naming and wandb log names (can also use separate optional "tag")
+seed: 42              # random seed
+devices: "auto"       # lighting devices (multi GPU support not verified)
+res_path: "./results" # results path (default is ./results)
+
+wandb_proj: None       # name of wandb project, set to None if you don't want to use
+vis_path: True      # set to True if you want to visualise the results, else False
+ckpt_path: None     # path to where ckpt is saved, if None - don't save (None with capital N! i.e. None). This same argument is used when doing eval only to pass saved checkpoint.
+
+dev: False          # set to True for fast dev run (https://lightning.ai/docs/pytorch/stable/common/trainer.html#fast-dev-run)
+
+# dataset details
+data:
+  dataset: "clcd"
+  img_size: 256    # square of img_size x img_size
+  num_workers: 8
+  batch_size: 32
+  pin_memory: True # not used
+  # uncomment below if you use custom hdf5 dataset (or our oscd splits)
+#  use_hf: False
+#  load_in_mem: "hdf5"
+
+# train details
+train:
+  epochs: 100
+  val_freq: 5           # run validation on val set every N epoch
+  base_lr: 1.0e-4       # starting lr
+  weight_decay: 1e-4
+  layer_decay: 0.99     # unused
+  lr_scheduler:         # scheduler params, refer to models/framework.py "get_scheduler" function for more details
+    type: "cosine"
+    ratio_t0: 1
+  loss:
+    - dice      # multiple losses can be listed here, the final result will be sum of losses refer to models/finetune_framework.py
+  transforms:   # most of albumentations transforms will work out of the box
+    - VerticalFlip: { p: 0.3 }
+    - HorizontalFlip: { p: 0.3 }
+    - Rotate: { limit: [ -90, 90 ], p: 0.3 }
+    - Normalize: { mean: [ 0.485, 0.456, 0.406 ], std: [ 0.229, 0.224, 0.225 ] }
+
+encoder:
+  class_path: models.modules.hf_backbone.HFBackbone # path to class from root directory
+  init_args: # init args (default can be skipped)
+    model_name: facebook/mask2former-swin-base-IN21k-cityscapes-semantic  # checkpoint from huggingface
+    return_layers: [1, 2, 3, 4]   # name of indices, "layer" will be prepended automatically (careful with timm indexing)
+    train_args:
+      pretrained: True  # if True, load weights from hf with "model_name", if False use jsut architecture
+      finetune: True    # True - tune the backbone, False - freeze the backbone
+
+diff:
+  class_path: models.modules.simple_diff.SubDiff  # elementwise subtraction
+
+# there is also possibility of pre-diff module and out_proc module
+
+decoder:
+  train:
+    class_path: models.modules.upernet.UperNetHead # path to class from root directory
+    init_args:  # init args (default can be skipped)
+      out_channels: 1
+      hidden_size: 512
+      use_auxfcn: False

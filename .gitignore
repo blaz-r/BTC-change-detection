@@ -1,0 +1,11 @@
+*.idea
+*.log
+logs
+lightning_logs
+*wandb*
+*.pyc
+weights/*
+*ckpt
+results/**/visual/*
+sout*
+datasets
