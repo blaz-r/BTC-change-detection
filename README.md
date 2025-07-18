@@ -1,4 +1,19 @@
-# Be the Change You Want to See: Revisiting Remote Sensing Change Detection Practices
+<div align="center">
+<h1 align="center">BTC - Be The Change</h1>
+<h3>Be the Change You Want to See: Revisiting Remote Sensing Change Detection Practices</h3>
+
+[Blaž Rolih](https://scholar.google.com/citations?user=Qs-k2PkAAAAJ), [Matic Fučka](https://scholar.google.com/citations?user=2kdcuAkAAAAJ), [Filip Wolf](https://scholar.google.com/citations?user=1i7eNmwAAAAJ), [Luka Čehovin Zajc](https://scholar.google.com/citations?hl=en&user=XKc1wdcAAAAJ)
+
+University of Ljubljana, Faculty of Computer and Information Science
+
+[![TGRS](https://img.shields.io/badge/TGRS-paper-00629B.svg)](https://arxiv.org/abs/2507.03367)
+[![arXiv](https://img.shields.io/badge/arXiv-2507.03367-b31b1b.svg)](https://arxiv.org/abs/2507.03367)
+
+[**Overveiw**](#overview) | [**Get Started**](#get-started) | [**Results**](#results) | [**Reference**](#reference) | [**Questions**](#questions)
+
+</div>
+
+## Overview
 
 This repository contains the codebase for **BTC (Be The Change)** and the accompanying analysis from our paper.
 
@@ -6,14 +21,18 @@ The work systematically investigates the impact of fundamental design choices in
 detection, like pretraining strategies, data augmentations, loss functions, and learning rate schedulers. 
 Building on these insights, we introduce BTC, a simple yet strong baseline that leverages these core components
 to achieve state-of-the-art performance across multiple benchmark datasets.
-
-![title](picture/title.svg)
+<p align="center">
+    <img src="picture/title.svg" alt="title img showing 9.4 percentage points of performance boost with our analysis">
+</p>
 
 ### BTC architecture
+<p align="center">
+    <img src="picture/arch.svg">
+</p>
 
-![arch](picture/arch.svg)
+## Get Started
 
-## Environment setup
+### Environment setup
 
 Create a Python environment and install required packages:
 
@@ -24,7 +43,7 @@ conda activate btc_env
 pip install -r requirements.txt
 ```
 
-## Training and evaluation
+### Training and evaluation
 
 Run the training and evaluation with:
 ```bash
@@ -63,7 +82,7 @@ When you have use_hf set to False, you can additionally set the following flags:
 
 #### Custom directory format
 
-Use the following structure for custom directory dataset.
+Use the following structure for a custom directory dataset.
 ```
 data_root/
     dataset_name/
@@ -89,7 +108,7 @@ data_root/
 
 #### Custom HDF5 data
 
-Set `data.load_in_mem` to "hdf5" and `data.use_hf=False` if you have the dataset in format with hdf5 files:
+Set `data.load_in_mem` to "hdf5" and `data.use_hf=False` if you have the dataset in a format with hdf5 files:
 ```
 data_root/
     dataset_name/
@@ -102,15 +121,6 @@ Each HDF5 file must contain the following collections:
 - imageB
 - label
 - img_idx
-
-## Results
-
-All evaluation metrics (F1, Precision, Recall, cIoU) across seeds and methods are stored in the results directory. This includes:
-
-- Design choice analysis
-- BTC-T / BTC-B models
-- Remote sensing foundation models
-- Change detection-specific baselines
 
 ## Configuration files
 
@@ -138,13 +148,13 @@ encoder -> diff -> decoder
 
 Additional modules like in_proc, pre_diff, and out_proc are supported but unused in this work (see `models/finetune_framework.py`).
 
-Alternatively you can also list all arguments with:
+Alternatively, you can also list all arguments with:
 
 ```bash
 python train.py -h
 ```
 
-## Performance benchmarking
+### Performance benchmarking
 
 The benchmarking code and results are inside the [perf](./perf) directory.
 
@@ -153,13 +163,34 @@ Run model inference speed and efficiency evaluation with:
 python perf.py
 ```
 
-## Slurm
+### Slurm
 
 Slurm job scripts are included for both training and evaluation workflows.
 
+## Results
+
+All evaluation metrics (F1, Precision, Recall, cIoU) across seeds and methods are stored in the results directory. This includes:
+
+- Design choice analysis
+- BTC-T / BTC-B models
+- Remote sensing foundation models
+- Change detection-specific baselines
+
 ## Reference
 
-TBA - Paper currently under review.
+If you found this work useful, consider citing our paper and giving this repo a ⭐ 😃
+```bibtex
+@ARTICLE{rolih2025btc,
+  author={Rolih, Blaž and Fučka, Matic and Wolf, Filip and Zajc, Luka Čehovin},
+  journal={IEEE Transactions on Geoscience and Remote Sensing}, 
+  title={Be the Change You Want to See: Revisiting Remote Sensing Change Detection Practices}, 
+  year={2025},
+  volume={63},
+  number={},
+  pages={1-11},
+  doi={10.1109/TGRS.2025.3585342}
+}
+```
 
 ## Questions
 
