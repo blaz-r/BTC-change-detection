@@ -6,7 +6,7 @@
 
 University of Ljubljana, Faculty of Computer and Information Science
 
-[![TGRS](https://img.shields.io/badge/TGRS-paper-00629B.svg)](https://arxiv.org/abs/2507.03367)
+[![TGRS](https://img.shields.io/badge/TGRS-paper-00629B.svg)](https://doi.org/10.1109/TGRS.2025.3585342)
 [![arXiv](https://img.shields.io/badge/arXiv-2507.03367-b31b1b.svg)](https://arxiv.org/abs/2507.03367)
 
 [**Overveiw**](#overview) | [**Get Started**](#get-started) | [**Results**](#results) | [**Reference**](#reference) | [**Questions**](#questions)
