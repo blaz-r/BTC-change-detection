@@ -64,7 +64,10 @@ The checkpoints are available [here](https://drive.google.com/drive/folders/1OND
 By default, datasets are automatically downloaded from [huggingface](https://huggingface.co/ericyu)
 and saved into `./datasets` directory. We thank Weikang Yu for making these splits publicly available.
 
-> **Note:** The OSCD dataset on HuggingFace is not cropped into the original 96x96 tiles. We provide a corrected version (zip and HDF5 files) [here](https://drive.google.com/drive/folders/1VH_aR8tLtvVXKYwIhFxpBko9d46_Gn5P?usp=sharing). !
+Possible already integrated dataset options are: `oscd96`, `levir`, `sysu`, `egybcd`, `clcd`, `gvlm`.
+
+> **Note:** The OSCD dataset cropped into 96x96 tiles is now [available on HuggingFace](https://huggingface.co/datasets/blaz-r/OSCD_RGB_Cropped_96). 
+> We also provide zip and HDF5 files [here](https://drive.google.com/drive/folders/1VH_aR8tLtvVXKYwIhFxpBko9d46_Gn5P?usp=sharing). !
 
 ### Dataset Configuration Options
 

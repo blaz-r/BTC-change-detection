@@ -12,6 +12,7 @@ from data.hf_datasets import (
     get_egybcd,
     get_clcd,
     get_gvlm,
+    get_oscd96,
 )
 
 
@@ -75,9 +76,8 @@ class CDDataModule(L.LightningDataModule):
         )
 
         if (
-            self.use_hf
-            and "val" in data
-            or data["val"].exists()
+            (self.use_hf and "val" in data)
+            or (self.load_in_mem == "direct" and data["val"].exists())
             or (self.load_in_mem == "hdf5" and Path(str(data["val"]) + ".h5").exists())
         ):
             self.val_data = CDDataset(
@@ -121,8 +121,8 @@ class CDDataModule(L.LightningDataModule):
 
 
 def get_hf_dataset(name, data_path):
-    if name == "oscd":
-        raise ValueError("OSCD requires HDF5 dataset")
+    if name == "oscd96":
+        ds = get_oscd96(data_path)
     elif name == "levir":
         ds = get_levircd(data_path)
     elif name == "sysu":

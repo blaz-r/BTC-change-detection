@@ -24,3 +24,8 @@ def get_clcd(path):
 def get_gvlm(path):
     ds = load_dataset("ericyu/GVLM_Cropped_256", cache_dir=path)
     return ds
+
+
+def get_oscd96(path):
+    ds = load_dataset("blaz-r/OSCD_RGB_Cropped_96", cache_dir=path)
+    return ds
