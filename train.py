@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import pandas as pd
@@ -53,6 +52,39 @@ def finetune(framework, datamodule, config, wandb_logger):
         model=framework,
         datamodule=datamodule,
     )
+
+
+def load_weights(config, finetune_framework, res_path):
+    if config.ckpt_path.startswith("blaz-r/"):
+        print(
+            f"Loading checkpoint from huggingface {config.ckpt_path}. Make sure that the config matches the checkpoint!!"
+        )
+        if config.data.dataset not in config.ckpt_path:
+            msg = f"Checkpoint dataset and config dataset missmatch. Expected {config.data.dataset}, but got {config.ckpt_path}"
+            raise ValueError(msg)
+        finetune_framework = finetune_framework.from_pretrained(
+            config.ckpt_path,
+            metrics=MetricCollection(
+                {
+                    "F1": BinaryF1Score(),
+                    "Recall": BinaryRecall(),
+                    "Precision": BinaryPrecision(),
+                    "cIoU": BinaryJaccardIndex(),
+                }
+            ),
+            logger=None,
+            config_namespace=config,  # not the cleanest thing, but this way we keep the passed config settings.
+        )
+        # if loading from HF, the class is re-instantiated so we need to set this
+        finetune_framework.res_path = res_path
+    else:
+        print(
+            f"Loading checkpoint from file system: {config.ckpt_path}. Make sure that the config matches the checkpoint!!"
+        )
+        state_dict = torch.load(config.ckpt_path, weights_only=False)["state_dict"]
+        finetune_framework.load_state_dict(state_dict)
+
+    return finetune_framework
 
 
 def evaluate(framework, datamodule, config, wandb_logger):
@@ -111,7 +143,7 @@ def main(seed=None):
         logger=None,
     )
 
-    finetune_framework.generate_and_verify_res_path(
+    res_path = finetune_framework.generate_and_verify_res_path(
         Path(config.res_path) / str(config.seed)
     )
     finetune_framework.dump_config()
@@ -125,8 +157,7 @@ def main(seed=None):
         wandb_logger = None
 
     if config.eval_only:
-        state_dict = torch.load(config.ckpt_path, weights_only=False)["state_dict"]
-        finetune_framework.load_state_dict(state_dict)
+        finetune_framework = load_weights(config, finetune_framework, res_path)
     else:
         print(f"Starting finetune for {run_name}")
         finetune(finetune_framework, datamodule, config, wandb_logger)

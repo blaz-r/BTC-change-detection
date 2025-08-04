@@ -9,6 +9,8 @@ University of Ljubljana, Faculty of Computer and Information Science
 [![TGRS](https://img.shields.io/badge/TGRS-paper-00629B.svg)](https://doi.org/10.1109/TGRS.2025.3585342)
 [![arXiv](https://img.shields.io/badge/arXiv-2507.03367-b31b1b.svg)](https://arxiv.org/abs/2507.03367)
 
+[![Model on HF](https://huggingface.co/datasets/huggingface/badges/resolve/main/model-on-hf-md.svg)](https://huggingface.co/papers/2507.03367)
+
 [**Overveiw**](#overview) | [**Get Started**](#get-started) | [**Results**](#results) | [**Reference**](#reference) | [**Questions**](#questions)
 
 </div>
@@ -52,22 +54,27 @@ python train.py --config configs/exp/BTC-B.yaml
 
 Run evaluation only:
 ```bash
-python train.py --config configs/exp/BTC-B.yaml --eval_only --ckpt_path <path to the weights (e.g. weights/clcd.pt)>
+python train.py --config configs/exp/BTC-B.yaml --eval_only --ckpt_path <HF model id / path to the weights>
 ```
 
 ### Checkpoints:
 
-The checkpoints are available [here](https://drive.google.com/drive/folders/1OND326JAw420C9F2yTaqyGDlTN8OLDON?usp=sharing)
+The checkpoints are available on [Hugging Face](https://huggingface.co/collections/blaz-r/btc-checkpoints-6890ab259e6fe179534d2e93)
+and [Google drive](https://drive.google.com/drive/folders/1OND326JAw420C9F2yTaqyGDlTN8OLDON?usp=sharing).
+
+If you want to use the checkpoints from Huggingface, pass their model id like so: `--ckpt_path blaz-r/BTC-B_<dataset_name>"`, e.g. `--ckpt_path blaz-r/BTC-B_oscd96`.
+
+Pass the path to downloaded checkpoint if you use `.ckpt` files, e.g. `--ckpt_path /path/to/ckpt_file.ckpt`
 
 ### Data
 
-By default, datasets are automatically downloaded from [huggingface](https://huggingface.co/ericyu)
+By default, datasets are automatically downloaded from [Hugging Face](https://huggingface.co/ericyu)
 and saved into `./datasets` directory. We thank Weikang Yu for making these splits publicly available.
 
 Possible already integrated dataset options are: `oscd96`, `levir`, `sysu`, `egybcd`, `clcd`, `gvlm`.
 
-> **Note:** The OSCD dataset cropped into 96x96 tiles is now [available on HuggingFace](https://huggingface.co/datasets/blaz-r/OSCD_RGB_Cropped_96). 
-> We also provide zip and HDF5 files [here](https://drive.google.com/drive/folders/1VH_aR8tLtvVXKYwIhFxpBko9d46_Gn5P?usp=sharing). !
+> **Note:** The OSCD dataset cropped into 96x96 tiles is now [available on Hugging Face](https://huggingface.co/datasets/blaz-r/OSCD_RGB_Cropped_96). 
+> We also provide zip and HDF5 files [here](https://drive.google.com/drive/folders/1VH_aR8tLtvVXKYwIhFxpBko9d46_Gn5P?usp=sharing).
 
 ### Dataset Configuration Options
 

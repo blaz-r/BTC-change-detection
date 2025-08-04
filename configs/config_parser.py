@@ -84,7 +84,8 @@ def add_arguments(parser: ArgumentParser):
 
     parser.add_argument(
         "--vis_path",
-        default=None,
+        default=False,
+        type=bool,
         help="Flag whether images are visualised (True / False).",
     )
     parser.add_argument("--ckpt_path", help="save checkpoints", type=str, default=None)

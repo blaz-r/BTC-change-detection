@@ -19,6 +19,7 @@ torchvision
 wandb
 ruff
 
-# if using hf datasets
+# if using hf datasets and checkpoints
 datasets==3.6
+huggingface_hub
 

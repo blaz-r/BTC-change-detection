@@ -1,4 +1,6 @@
 import lightning as L
+from huggingface_hub import PyTorchModelHubMixin
+from argparse import Namespace
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import (
     MultiStepLR,
@@ -19,17 +21,24 @@ from models.modules import (
 )
 
 
-class Framework(L.LightningModule):
+class Framework(
+    L.LightningModule,
+    PyTorchModelHubMixin,
+    repo_url="https://github.com/blaz-r/BTC-change-detection",
+    paper_url="https://arxiv.org/abs/2507.03367",
+    docs_url="https://github.com/blaz-r/BTC-change-detection",
+):
     pretraining = None  # setup in subclass
 
     def __init__(
         self,
-        config_namespace,
-        config,  # to save in wandb
+        config_namespace: Namespace,
+        config: dict,  # to save in wandb
         logger,
     ):
         super().__init__()
         self.config = config_namespace
+        self.config_dict = config  # to save in wandb
         self.metrics: MetricCollection
 
         # make dec and get dims & strides
