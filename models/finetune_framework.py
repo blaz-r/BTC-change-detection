@@ -1,6 +1,7 @@
 from functools import partial
 from pathlib import Path
 from typing import Any
+import os
 
 import torch
 import yaml
@@ -24,18 +25,24 @@ class FinetuneFramework(Framework):
             config = self.config
             # omit dataset name and config tag from name, rather have them in path
             res_run_name = f"{config.tag}_[{self.enc.name}_{self.diff.name}_{self.dec.name}_{self.loss_name}]"
-
             if self.pre_diff is not None:
                 res_run_name += f"({self.pre_diff.name})"
             if self.out_proc is not None:
                 res_run_name += f"({self.out_proc.name})"
-
-            res_path = (
-                Path(save_path) / config.config_tag / res_run_name / config.data.dataset
-            )
-            # raise exception if exists in non dev mode
-            res_path.mkdir(parents=True, exist_ok=config.dev)
-
+            res_path = Path(save_path) / config.config_tag / res_run_name / config.data.dataset
+    
+            rank = int(os.environ.get("RANK", os.environ.get("LOCAL_RANK", 0)))
+            is_leader = rank == 0
+    
+            # Leader creates directory
+            if is_leader:
+                if res_path.exists() and not config.dev:
+                    raise FileExistsError(f"Result path {res_path} already exists (dev mode off)")
+                res_path.mkdir(parents=True, exist_ok=config.dev)
+            else:
+                # Non-leader creates directory directly (exist_ok=True to avoid conflicts)
+                res_path.mkdir(parents=True, exist_ok=True)
+    
             self.res_path = res_path
 
         return self.res_path
